@@ -33,3 +33,4 @@ A simple web application that uses the **PokeAPI** to retrieve real-time informa
 
 * **Mark Edzon Araojo**
 * **Gilbert Aquino**
+* **Gilbert R. Bumanglag Jr.**
