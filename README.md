@@ -1,10 +1,35 @@
 # Pokémon Finder Project
 
-Isang simpleng web application na kumukuha ng real-time data mula sa PokeAPI para maghanap at magpakita ng mga impormasyon tungkol sa mga Pokémon.
+A simple web application that uses the **PokeAPI** to retrieve real-time information about Pokémon. Users can search for a Pokémon by name and view details such as its image, type, abilities, and other basic information.
 
-## Paano Patakbuhin ang Project locally
+## Features
 
-1. I-clone ang repository na ito sa iyong computer (kung hindi mo pa nagagawa).
-2. Pumunta sa folder ng project.
-3. I-double click o buksan ang `index.html` gamit ang anumang web browser (Google Chrome, Edge, Safari).
-4. *Opsyonal:* Kung gumagamit ka ng VS Code, maaari mong i-right click ang `index.html` at piliin ang **"Open with Live Server"**.
+* 🔍 Search for Pokémon by name.
+* ⚡ Fetches real-time data from the **PokeAPI**.
+* 🖼️ Displays the Pokémon's image and basic information.
+* 🌐 Simple and user-friendly interface.
+
+## How to Run the Project Locally
+
+1. Clone this repository to your computer:
+
+   ```bash
+   git clone <repository-url>
+   ```
+2. Navigate to the project folder:
+
+   ```bash
+   cd <project-folder>
+   ```
+3. Open `index.html` in any web browser (Google Chrome, Microsoft Edge, Firefox, or Safari).
+
+**Optional:** If you are using **Visual Studio Code**, right-click `index.html` and select **Open with Live Server** for a better development experience.
+
+## API Used
+
+* **PokeAPI** – https://pokeapi.co/
+
+## Developers
+
+* **Mark Edzon Araojo**
+* **Gilbert Aquino**
