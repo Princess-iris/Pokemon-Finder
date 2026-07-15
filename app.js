@@ -4,11 +4,9 @@ const pokemonInput = document.getElementById('pokemon-input');
 const resultContainer = document.getElementById('result-container');
 
 
-// Variable para hawakan ang kasalukuyang audio object upang hindi mag-overlap ang tunog
-let currentCryAudio = null;
+// Variable to hold the current audio object so the sounds do not overlaplet currentCryAudio = null;
 
-// Function para kumuha ng data mula sa PokeAPI
-async function getPokemonData(targetQuery) {
+// Function to fetch data from PokeAPIasync function getPokemonData(targetQuery) {
     const query = targetQuery || pokemonInput.value.trim().toLowerCase();
 
     if (!query && !targetQuery) {
@@ -29,13 +27,10 @@ async function getPokemonData(targetQuery) {
 
         const data = await response.json();
 
-        // I-render ang data kasama ang sound player logic
-        displayPokemon(data);
+// Render the data along with the sound player logic        displayPokemon(data);
 
-        // Linisin ang input field pagkatapos maghanap
         pokemonInput.value = '';
 
-        // ─── AMBAG NG KA-GRUPO MO (BRANCH: feature-search-history) ───
 
     } catch (error) {
         console.error('API Error Exception:', error);
@@ -43,18 +38,15 @@ async function getPokemonData(targetQuery) {
     }
 }
 
-// Function para sa Loading State
-function renderLoading() {
+// Function for Loading Statefunction renderLoading() {
     resultContainer.innerHTML = `<p class="loading">Finding Pokémon data...</p>`;
 }
 
-// Function para sa Error Handling
-function renderError(message) {
+// Function for Error Handlingfunction renderError(message) {
     resultContainer.innerHTML = `<p class="error">⚠️ Error: ${message}</p>`;
 }
 
-// Function para i-render ang Card
-function displayPokemon(pokemon) {
+// Function to render the Cardfunction displayPokemon(pokemon) {
     const typesHTML = pokemon.types.map(t => 
         `<span class="type">${t.type.name.toUpperCase()}</span>`
     ).join('');
@@ -63,8 +55,7 @@ function displayPokemon(pokemon) {
     const attack = pokemon.stats[1].base_stat;
     const defense = pokemon.stats[2].base_stat;
 
-    // Kunin ang audio URL mula sa PokeAPI responses (.cries.latest)
-    const cryAudioUrl = pokemon.cries ? pokemon.cries.latest : null;
+// Get the audio URL from the PokeAPI responses (.cries.latest)    const cryAudioUrl = pokemon.cries ? pokemon.cries.latest : null;
 
     resultContainer.innerHTML = `
         <div class="card">
