@@ -3,10 +3,7 @@ const randomBtn = document.getElementById('random-btn');
 const pokemonInput = document.getElementById('pokemon-input');
 const resultContainer = document.getElementById('result-container');
 
-// ─── AMBAG NG KA-GRUPO MO (BRANCH: feature-search-history) ───
-// Dito magdedeklara ang ka-grupo mo ng global array variable para sa search tracking.
 
-// Function para kumuha ng data mula sa PokeAPI
 async function getPokemonData(targetQuery) {
     const query = targetQuery || pokemonInput.value.trim().toLowerCase();
 
@@ -28,14 +25,11 @@ async function getPokemonData(targetQuery) {
 
         const data = await response.json();
 
-        // I-render ang data gamit ang tamang CSS classes mo
         displayPokemon(data);
 
-        // Linisin ang input field
+        // Clean input field
         pokemonInput.value = '';
 
-        // ─── AMBAG NG KA-GRUPO MO (BRANCH: feature-search-history) ───
-        // Dito isisingit ang logic para sa pag-save ng kasalukuyang search sa history list.
 
     } catch (error) {
         console.error('API Error Exception:', error);
@@ -43,7 +37,7 @@ async function getPokemonData(targetQuery) {
     }
 }
 
-// Function para sa Loading State (Sumusunod sa .loading ng CSS mo)
+// Function for the Loading State (Follows your CSS .loading class)
 function renderLoading() {
     resultContainer.innerHTML = `<p class="loading">Finding Pokémon data...</p>`;
 }
@@ -53,19 +47,19 @@ function renderError(message) {
     resultContainer.innerHTML = `<p class="error">⚠️ Error: ${message}</p>`;
 }
 
-// Function para i-render ang Card na may Box at Stats gamit ang mga classes mo
+// Function to render the Card with the Box and Stats using your classes.
 function displayPokemon(pokemon) {
-    // I-map ang types gamit ang .type class na nasa CSS mo
+    //Map the types using the `.type` class in your CSS.
     const typesHTML = pokemon.types.map(t => 
         `<span class="type">${t.type.name.toUpperCase()}</span>`
     ).join('');
 
-    // Extract statistics configurations mula sa data object
+    // Extract statistics configurations from the data object
     const hp = pokemon.stats[0].base_stat;
     const attack = pokemon.stats[1].base_stat;
     const defense = pokemon.stats[2].base_stat;
 
-    // Ginagamit nito ang .card, .types, .info, .stats, .bar, at .fill mula sa style.css mo!
+    // It uses .card, .types, .info, .stats, .bar, and .fill from your style.css!
     resultContainer.innerHTML = `
         <div class="card">
             <h2>${pokemon.name.toUpperCase()}</h2>
@@ -107,8 +101,6 @@ function displayPokemon(pokemon) {
         </div>
     `;
 
-    // ─── AMBAG NG KA-GRUPO MO (BRANCH: feature-pokemon-cry) ───
-    // Dito sa ilalim ilalagay ang callback click function system para sa sounds execution.
 }
 
 // Random Button Logic Engine
@@ -117,7 +109,7 @@ randomBtn.addEventListener('click', () => {
     getPokemonData(randomId);
 });
 
-// Primary Event Listeners
+//Primary Event Listeners
 searchBtn.addEventListener('click', () => getPokemonData());
 pokemonInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
