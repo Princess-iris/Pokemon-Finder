@@ -131,3 +131,28 @@ button:hover{
     font-size:18px;
     font-weight:bold;
 }
+
+/* ===========================
+   Pokémon Cry Button
+   =========================== */
+
+#play-cry-btn{
+    margin-top:20px;
+    padding:12px 18px;
+    border:none;
+    border-radius:8px;
+    background:#2196f3;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    transition:background 0.3s ease;
+}
+
+#play-cry-btn:hover{
+    background:#1976d2;
+}
+
+#play-cry-btn:disabled{
+    background:#999;
+    cursor:not-allowed;
+}
