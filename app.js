@@ -106,6 +106,12 @@ function displayPokemon(pokemon){
 
             </div>
 
+            <button id="play-cry-btn">
+
+                🔊 Play Pokémon Cry
+
+            </button>
+
             <div class="stats">
 
                 <h3>Base Stats</h3>
@@ -117,5 +123,25 @@ function displayPokemon(pokemon){
         </div>
 
     `;
+
+    const playCryBtn = document.getElementById("play-cry-btn");
+
+    if (pokemon.cries && pokemon.cries.latest) {
+
+        playCryBtn.addEventListener("click", ()=>{
+
+            const audio = new Audio(pokemon.cries.latest);
+
+            audio.play();
+
+        });
+
+    } else {
+
+        playCryBtn.disabled = true;
+
+        playCryBtn.textContent = "Cry Not Available";
+
+    }
 
 }
