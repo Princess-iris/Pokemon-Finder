@@ -14,12 +14,12 @@ A simple web application that uses the **PokeAPI** to retrieve real-time informa
 1. Clone this repository to your computer:
 
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/MarkEdzon/api-project.git
    ```
 2. Navigate to the project folder:
 
    ```bash
-   cd <project-folder>
+   cd api-project
    ```
 3. Open `index.html` in any web browser (Google Chrome, Microsoft Edge, Firefox, or Safari).
 
@@ -31,6 +31,6 @@ A simple web application that uses the **PokeAPI** to retrieve real-time informa
 
 ## Developers
 
-* **Mark Edzon Araojo**
-* **Gilbert Aquino**
+* **Mark Edzon G. Araojo**
+* **Gilbert T. Aquino**
 * **Gilbert R. Bumanglag Jr.**

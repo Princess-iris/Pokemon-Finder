@@ -1,16 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Basic page information -->
     <meta charset="UTF-8">
+    <!-- Makes the website responsive on different screen sizes -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Title that appears in the browser tab -->
     <title>Pokémon Explorer</title>
+
+    <!-- Connect my external CSS file -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- Import Google Fonts that I want to use for the design -->
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
+<!-- Main container that holds everything on the page -->
 <div class="container">
 
+    <!-- Header section with the title and short description -->
     <header>
         <h1>Pokémon Explorer</h1>
         <p class="subtitle">
@@ -18,9 +29,16 @@
         </p>
     </header>
 
+    <!-- This section contains the search input and buttons -->
     <div class="search-box">
+
+        <!-- Wrapper so I can place the search icon inside the input area -->
         <div class="input-wrapper">
+
+            <!-- Search icon for a nicer UI -->
             <span class="search-icon">🔍</span>
+
+            <!-- User enters a Pokémon name or ID here -->
             <input
                 type="text"
                 id="pokemon-input"
@@ -29,26 +47,40 @@
             >
         </div>
 
+        <!-- Button that starts the Pokémon search -->
         <button id="search-btn">
             Search
         </button>
 
+        <!-- Button that picks a random Pokémon -->
         <button id="random-btn">
             Random 🎲
         </button>
     </div>
 
+    <!-- This is where the search history will be displayed using JavaScript -->
     <div id="history-container"></div>
 
+    <!-- This section shows the Pokémon information after searching -->
     <div id="result-container">
+
+        <!-- Default message shown before the user searches -->
         <div class="placeholder-state">
+
+            <!-- Small animation to make the page look less empty -->
             <div class="animated-pulse">✨</div>
-            <p class="placeholder">Search a Pokémon to see its details.</p>
+
+            <!-- Instructions for the user -->
+            <p class="placeholder">
+                Search a Pokémon to see its details.
+            </p>
         </div>
+
     </div>
 
 </div>
 
+<!-- Connect my JavaScript file that handles the search functionality -->
 <script src="app.js"></script>
 
 </body>

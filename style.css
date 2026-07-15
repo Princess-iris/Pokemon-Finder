@@ -1,3 +1,4 @@
+/* Remove the default spacing of all elements so I can style everything consistently */
 *{
     margin:0;
     padding:0;
@@ -5,10 +6,12 @@
     font-family:Arial, Helvetica, sans-serif;
 }
 
+/* Give the whole page a light gray background */
 body{
     background:#f4f4f4;
 }
 
+/* Main container that keeps all the content centered */
 .container{
     width:90%;
     max-width:800px;
@@ -16,17 +19,20 @@ body{
     padding:30px;
 }
 
+/* Style for the main page title */
 h1{
     text-align:center;
     color:#ef5350;
 }
 
+/* Small description below the title */
 .subtitle{
     text-align:center;
     margin:15px 0 30px;
     color:#555;
 }
 
+/* Holds the search input and buttons */
 .search-box{
     display:flex;
     gap:10px;
@@ -35,6 +41,7 @@ h1{
     flex-wrap:wrap;
 }
 
+/* Style the text input where the user types the Pokémon name */
 input{
     padding:12px;
     width:250px;
@@ -42,6 +49,7 @@ input{
     border:1px solid #ccc;
 }
 
+/* Basic style for all buttons */
 button{
     padding:12px 18px;
     border:none;
@@ -52,15 +60,18 @@ button{
     font-weight:bold;
 }
 
+/* Change the button color when the mouse is over it */
 button:hover{
     background:#d84343;
 }
 
+/* Center the Pokémon card on the page */
 #result-container{
     display:flex;
     justify-content:center;
 }
 
+/* Main card that displays the Pokémon information */
 .card{
     background:white;
     width:100%;
@@ -71,10 +82,12 @@ button:hover{
     text-align:center;
 }
 
+/* Resize the Pokémon image */
 .card img{
     width:180px;
 }
 
+/* Display the Pokémon types beside each other */
 .types{
     display:flex;
     justify-content:center;
@@ -82,6 +95,7 @@ button:hover{
     margin:15px 0;
 }
 
+/* Style for each Pokémon type label */
 .type{
     background:#ef5350;
     color:white;
@@ -89,45 +103,82 @@ button:hover{
     border-radius:20px;
 }
 
+/* Section that contains the Pokémon details */
 .info{
     text-align:left;
     margin-top:15px;
 }
 
+/* Add spacing between each information line */
 .info p{
     margin:8px 0;
 }
 
+/* Container for all Pokémon stats */
 .stats{
     margin-top:20px;
 }
 
+/* Give each stat a little spacing */
 .stat{
     margin:10px 0;
 }
 
+/* Background of the stat progress bar */
 .bar{
     width:100%;
     background:#ddd;
     border-radius:10px;
 }
 
+/* Green part that shows the value of each stat */
 .fill{
     height:12px;
     background:#4caf50;
     border-radius:10px;
 }
 
+/* Style for the placeholder text before searching */
 .placeholder{
     color:#666;
 }
 
+/* Style for error messages */
 .error{
     color:red;
     font-weight:bold;
 }
 
+/* Style shown while waiting for data to load */
 .loading{
     font-size:18px;
     font-weight:bold;
+}
+
+/* ===========================
+   Pokémon Cry Button
+   =========================== */
+
+/* Button that lets the user play the Pokémon's cry */
+#play-cry-btn{
+    margin-top:20px;
+    padding:12px 18px;
+    border:none;
+    border-radius:8px;
+    background:#2196f3;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+    transition:background 0.3s ease;
+}
+
+/* Make the cry button a darker blue when hovered */
+#play-cry-btn:hover{
+    background:#1976d2;
+}
+
+/* Show that the button can't be clicked when disabled */
+#play-cry-btn:disabled{
+    background:#999;
+    cursor:not-allowed;
 }
