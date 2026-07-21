@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>⚡ PokéBattle · Categories & Sounds</title>
+  <title>⚡ PokéBattle · Arena & History</title>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
@@ -106,7 +106,7 @@
       border-radius: 1.5rem;
       padding: 0.4rem 0.2rem 0.6rem;
       text-align: center;
-      border: 1px solid #2d3a4f;
+      border: 2px solid #2d3a4f;
       cursor: pointer;
       transition: 0.15s ease;
       box-shadow: 0 4px 10px rgba(0,0,0,0.4);
@@ -139,6 +139,10 @@
       border-radius: 30px;
       font-weight: 700;
       opacity: 0.7;
+    }
+    .pokemon-card.fighter-selected {
+      border: 3px solid #facc15;
+      box-shadow: 0 0 16px #facc1566;
     }
 
     .battle-panel {
@@ -191,6 +195,14 @@
       gap: 0.1rem;
       min-width: 80px;
       cursor: default;
+      border: 3px solid transparent;
+      border-radius: 20px;
+      padding: 0.2rem 0.4rem;
+      transition: 0.15s;
+    }
+    .fighter.active-turn {
+      border-color: #facc15;
+      box-shadow: 0 0 20px #facc1544;
     }
     .fighter img { width: 60px; height: 60px; filter: drop-shadow(0 0 8px #facc1533); }
     .fighter .fname { font-weight: 700; text-transform: capitalize; font-size: 0.85rem; }
@@ -282,10 +294,130 @@
     .detail-modal .close-detail { position: absolute; top: 12px; right: 18px; background: none; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer; }
     .detail-modal .close-detail:hover { color: #facc15; }
 
-    #history-container { display: flex; flex-wrap: wrap; gap: 0.3rem 0.5rem; margin: 0.2rem 0 0.4rem; }
-    .history-chip { background: #1e2a3a; padding: 0.1rem 0.8rem; border-radius: 30px; font-size: 0.7rem; border: 1px solid #334155; color: #cbd5e1; cursor: pointer; }
-    .history-chip:hover { border-color: #facc15; }
+    /* ----- HISTORY inside battle panel (right side) ----- */
+    .history-box {
+      background: #0f172a;
+      border-radius: 1.5rem;
+      padding: 0.5rem 0.8rem;
+      border: 1px solid #2d3a4f;
+      max-height: 200px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #facc15 #1e2a3a;
+      margin-top: 0.2rem;
+    }
+    .history-box::-webkit-scrollbar { width: 4px; }
+    .history-box::-webkit-scrollbar-track { background: #1e2a3a; border-radius: 10px; }
+    .history-box::-webkit-scrollbar-thumb { background: #facc15; border-radius: 10px; }
+    .history-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #94a3b8;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding-bottom: 0.2rem;
+      border-bottom: 1px solid #1e2a3a;
+      margin-bottom: 0.3rem;
+    }
+    .history-title i { color: #facc15; }
+
+    /* history chip with image and details */
+    .history-chip {
+      background: #1e2a3a;
+      padding: 0.3rem 0.6rem;
+      border-radius: 30px;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin: 0.15rem 0.2rem;
+      transition: 0.1s;
+      font-size: 0.6rem;
+      white-space: nowrap;
+    }
+    .history-chip:hover {
+      border-color: #facc15;
+      background: #253141;
+      transform: scale(1.02);
+    }
+    .history-chip img {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #0f172a;
+      border: 1px solid #facc15;
+      object-fit: contain;
+      padding: 2px;
+    }
+    .history-chip .winner-name {
+      color: #facc15;
+      font-weight: 700;
+    }
+    .history-chip .hp-info {
+      font-size: 0.5rem;
+      color: #94a3b8;
+      margin-left: 0.1rem;
+    }
+    .history-chip .vs-text {
+      color: #64748b;
+      margin: 0 0.1rem;
+    }
+    .history-empty {
+      color: #64748b;
+      font-size: 0.7rem;
+      text-align: center;
+      padding: 0.2rem 0;
+    }
     .placeholder-state { text-align: center; padding: 1.5rem 0; color: #64748b; }
+
+    /* history detail tooltip / expanded view */
+    .history-detail-popup {
+      display: none;
+      position: fixed;
+      background: #1e2a3a;
+      border: 1px solid #facc15;
+      border-radius: 1.2rem;
+      padding: 0.8rem 1.2rem;
+      z-index: 2000;
+      box-shadow: 0 20px 40px #000000cc;
+      max-width: 280px;
+      pointer-events: none;
+      color: #f1f5f9;
+      font-size: 0.7rem;
+      line-height: 1.5;
+    }
+    .history-detail-popup.show {
+      display: block;
+    }
+    .history-detail-popup .popup-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin: 0.1rem 0;
+    }
+    .history-detail-popup img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid #facc15;
+      background: #0f172a;
+      padding: 2px;
+    }
+    .history-detail-popup .popup-name {
+      font-weight: 700;
+      text-transform: capitalize;
+    }
+    .history-detail-popup .popup-hp {
+      color: #94a3b8;
+    }
+    .history-detail-popup .popup-winner {
+      color: #facc15;
+      font-weight: 700;
+    }
   </style>
 </head>
 <body>
@@ -301,11 +433,10 @@
         <button id="random-btn" class="random-btn"><i class="fas fa-dice"></i></button>
       </div>
     </div>
-    <div id="history-container"></div>
     <div id="pokemon-grid" class="grid-pokemon"></div>
   </div>
 
-  <!-- RIGHT: BATTLE -->
+  <!-- RIGHT: BATTLE + HISTORY -->
   <div class="battle-panel">
     <div class="battle-header">
       <h2><i class="fas fa-sword"></i> Battle Arena</h2>
@@ -340,6 +471,12 @@
         <i class="fas fa-circle-info"></i> <span class="log-message">Select two Pokémon from the grid</span>
       </div>
     </div>
+
+    <!-- HISTORY inside battle panel -->
+    <div class="history-box" id="history-box">
+      <div class="history-title"><i class="fas fa-trophy"></i> Battle History</div>
+      <div id="history-chips-container"><span class="history-empty">No battles yet</span></div>
+    </div>
   </div>
 </div>
 
@@ -357,159 +494,91 @@
   </div>
 </div>
 
+<!-- History Detail Popup -->
+<div class="history-detail-popup" id="historyPopup"></div>
+
 <script>
   (function() {
-    // ----- POKEMON CATEGORIES + ATTACKS -----
+    // ----- POKEMON CATEGORIES (simplified) -----
     const categoryMap = {
-      // Grass / Nature
-      'bulbasaur': { category: '🌿 Nature', attacks: [{ icon: 'fa-leaf', label: 'Vine Whip', dmg: 10 }, { icon: 'fa-seedling', label: 'Razor Leaf', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 8 }, { icon: 'fa-shield', label: 'Growth', dmg: 6 }] },
-      'ivysaur': { category: '🌿 Nature', attacks: [{ icon: 'fa-leaf', label: 'Vine Whip', dmg: 12 }, { icon: 'fa-seedling', label: 'Razor Leaf', dmg: 16 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 8 }, { icon: 'fa-shield', label: 'Growth', dmg: 8 }] },
-      'venusaur': { category: '🌿 Nature', attacks: [{ icon: 'fa-leaf', label: 'Vine Whip', dmg: 14 }, { icon: 'fa-seedling', label: 'Razor Leaf', dmg: 18 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-shield', label: 'Growth', dmg: 10 }] },
-      'oddish': { category: '🌿 Nature', attacks: [{ icon: 'fa-leaf', label: 'Vine Whip', dmg: 8 }, { icon: 'fa-seedling', label: 'Razor Leaf', dmg: 12 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-shield', label: 'Growth', dmg: 6 }] },
-      'gloom': { category: '🌿 Nature', attacks: [{ icon: 'fa-leaf', label: 'Vine Whip', dmg: 10 }, { icon: 'fa-seedling', label: 'Razor Leaf', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 8 }, { icon: 'fa-shield', label: 'Growth', dmg: 8 }] },
-      'vileplume': { category: '🌿 Nature', attacks: [{ icon: 'fa-leaf', label: 'Vine Whip', dmg: 14 }, { icon: 'fa-seedling', label: 'Razor Leaf', dmg: 18 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-shield', label: 'Growth', dmg: 10 }] },
-      'bellsprout': { category: '🌿 Nature', attacks: [{ icon: 'fa-leaf', label: 'Vine Whip', dmg: 8 }, { icon: 'fa-seedling', label: 'Razor Leaf', dmg: 12 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-shield', label: 'Growth', dmg: 6 }] },
-      'weepinbell': { category: '🌿 Nature', attacks: [{ icon: 'fa-leaf', label: 'Vine Whip', dmg: 10 }, { icon: 'fa-seedling', label: 'Razor Leaf', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 8 }, { icon: 'fa-shield', label: 'Growth', dmg: 8 }] },
-      'victreebel': { category: '🌿 Nature', attacks: [{ icon: 'fa-leaf', label: 'Vine Whip', dmg: 14 }, { icon: 'fa-seedling', label: 'Razor Leaf', dmg: 18 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-shield', label: 'Growth', dmg: 10 }] },
-      'exeggcute': { category: '🌿 Nature', attacks: [{ icon: 'fa-leaf', label: 'Vine Whip', dmg: 8 }, { icon: 'fa-seedling', label: 'Razor Leaf', dmg: 12 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-shield', label: 'Growth', dmg: 6 }] },
-      'exeggutor': { category: '🌿 Nature', attacks: [{ icon: 'fa-leaf', label: 'Vine Whip', dmg: 14 }, { icon: 'fa-seedling', label: 'Razor Leaf', dmg: 18 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-shield', label: 'Growth', dmg: 10 }] },
-      'tangela': { category: '🌿 Nature', attacks: [{ icon: 'fa-leaf', label: 'Vine Whip', dmg: 10 }, { icon: 'fa-seedling', label: 'Razor Leaf', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 8 }, { icon: 'fa-shield', label: 'Growth', dmg: 8 }] },
-
-      // Fire
-      'charmander': { category: '🔥 Fire', attacks: [{ icon: 'fa-fire', label: 'Ember', dmg: 12 }, { icon: 'fa-fire-flame-curved', label: 'Flamethrower', dmg: 18 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 8 }, { icon: 'fa-shield', label: 'Growl', dmg: 5 }] },
-      'charmeleon': { category: '🔥 Fire', attacks: [{ icon: 'fa-fire', label: 'Ember', dmg: 14 }, { icon: 'fa-fire-flame-curved', label: 'Flamethrower', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 10 }, { icon: 'fa-shield', label: 'Growl', dmg: 6 }] },
-      'charizard': { category: '🔥 Fire', attacks: [{ icon: 'fa-fire', label: 'Ember', dmg: 16 }, { icon: 'fa-fire-flame-curved', label: 'Flamethrower', dmg: 22 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 12 }, { icon: 'fa-shield', label: 'Growl', dmg: 8 }] },
-      'vulpix': { category: '🔥 Fire', attacks: [{ icon: 'fa-fire', label: 'Ember', dmg: 10 }, { icon: 'fa-fire-flame-curved', label: 'Flamethrower', dmg: 16 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 6 }, { icon: 'fa-shield', label: 'Growl', dmg: 5 }] },
-      'ninetales': { category: '🔥 Fire', attacks: [{ icon: 'fa-fire', label: 'Ember', dmg: 14 }, { icon: 'fa-fire-flame-curved', label: 'Flamethrower', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 10 }, { icon: 'fa-shield', label: 'Growl', dmg: 8 }] },
-      'growlithe': { category: '🔥 Fire', attacks: [{ icon: 'fa-fire', label: 'Ember', dmg: 10 }, { icon: 'fa-fire-flame-curved', label: 'Flamethrower', dmg: 16 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 8 }, { icon: 'fa-shield', label: 'Growl', dmg: 5 }] },
-      'arcanine': { category: '🔥 Fire', attacks: [{ icon: 'fa-fire', label: 'Ember', dmg: 16 }, { icon: 'fa-fire-flame-curved', label: 'Flamethrower', dmg: 22 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 12 }, { icon: 'fa-shield', label: 'Growl', dmg: 8 }] },
-      'ponyta': { category: '🔥 Fire', attacks: [{ icon: 'fa-fire', label: 'Ember', dmg: 10 }, { icon: 'fa-fire-flame-curved', label: 'Flamethrower', dmg: 16 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 8 }, { icon: 'fa-shield', label: 'Growl', dmg: 5 }] },
-      'rapidash': { category: '🔥 Fire', attacks: [{ icon: 'fa-fire', label: 'Ember', dmg: 14 }, { icon: 'fa-fire-flame-curved', label: 'Flamethrower', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 10 }, { icon: 'fa-shield', label: 'Growl', dmg: 8 }] },
-      'magmar': { category: '🔥 Fire', attacks: [{ icon: 'fa-fire', label: 'Ember', dmg: 12 }, { icon: 'fa-fire-flame-curved', label: 'Flamethrower', dmg: 18 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 8 }, { icon: 'fa-shield', label: 'Growl', dmg: 6 }] },
-      'flareon': { category: '🔥 Fire', attacks: [{ icon: 'fa-fire', label: 'Ember', dmg: 14 }, { icon: 'fa-fire-flame-curved', label: 'Flamethrower', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 10 }, { icon: 'fa-shield', label: 'Growl', dmg: 8 }] },
-      'moltres': { category: '🔥 Fire', attacks: [{ icon: 'fa-fire', label: 'Ember', dmg: 18 }, { icon: 'fa-fire-flame-curved', label: 'Flamethrower', dmg: 24 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 14 }, { icon: 'fa-shield', label: 'Growl', dmg: 10 }] },
-
-      // Water
-      'squirtle': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 10 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 18 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 8 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 5 }] },
-      'wartortle': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 12 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 6 }] },
-      'blastoise': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 14 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 22 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 12 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 8 }] },
-      'psyduck': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 8 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 16 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 5 }] },
-      'golduck': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 12 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 8 }] },
-      'poliwag': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 8 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 5 }] },
-      'poliwhirl': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 10 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 16 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 8 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 6 }] },
-      'poliwrath': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 14 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 12 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 8 }] },
-      'tentacool': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 8 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 5 }] },
-      'tentacruel': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 12 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 18 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 8 }] },
-      'slowpoke': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 8 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 5 }] },
-      'slowbro': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 12 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 18 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 8 }] },
-      'seel': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 8 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 5 }] },
-      'dewgong': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 12 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 18 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 8 }] },
-      'shellder': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 8 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 5 }] },
-      'cloyster': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 14 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 12 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 8 }] },
-      'krabby': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 8 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 5 }] },
-      'kingler': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 12 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 18 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 8 }] },
-      'horsea': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 8 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 5 }] },
-      'seadra': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 12 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 18 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 8 }] },
-      'goldeen': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 8 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 5 }] },
-      'seaking': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 12 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 18 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 8 }] },
-      'staryu': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 8 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 5 }] },
-      'starmie': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 14 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 12 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 8 }] },
-      'magikarp': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 4 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 8 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 4 }, { icon: 'fa-shield', label: 'Splash', dmg: 2 }] },
-      'gyarados': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 16 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 24 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 14 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 10 }] },
-      'lapras': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 14 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 12 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 8 }] },
-      'vaporeon': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 14 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 8 }] },
-      'omanyte': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 10 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 16 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 8 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 6 }] },
-      'omastar': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 14 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 12 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 8 }] },
-
-      // Electric / Lightning
-      'pikachu': { category: '⚡ Lightning', attacks: [{ icon: 'fa-bolt', label: 'Thunder Shock', dmg: 12 }, { icon: 'fa-bolt', label: 'Thunderbolt', dmg: 18 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 8 }, { icon: 'fa-shield', label: 'Growl', dmg: 5 }] },
-      'raichu': { category: '⚡ Lightning', attacks: [{ icon: 'fa-bolt', label: 'Thunder Shock', dmg: 14 }, { icon: 'fa-bolt', label: 'Thunderbolt', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 10 }, { icon: 'fa-shield', label: 'Growl', dmg: 6 }] },
-      'magnemite': { category: '⚡ Lightning', attacks: [{ icon: 'fa-bolt', label: 'Thunder Shock', dmg: 10 }, { icon: 'fa-bolt', label: 'Thunderbolt', dmg: 16 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-shield', label: 'Growl', dmg: 5 }] },
-      'magneton': { category: '⚡ Lightning', attacks: [{ icon: 'fa-bolt', label: 'Thunder Shock', dmg: 14 }, { icon: 'fa-bolt', label: 'Thunderbolt', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-shield', label: 'Growl', dmg: 8 }] },
-      'voltorb': { category: '⚡ Lightning', attacks: [{ icon: 'fa-bolt', label: 'Thunder Shock', dmg: 8 }, { icon: 'fa-bolt', label: 'Thunderbolt', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-shield', label: 'Growl', dmg: 5 }] },
-      'electrode': { category: '⚡ Lightning', attacks: [{ icon: 'fa-bolt', label: 'Thunder Shock', dmg: 12 }, { icon: 'fa-bolt', label: 'Thunderbolt', dmg: 18 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-shield', label: 'Growl', dmg: 8 }] },
-      'electabuzz': { category: '⚡ Lightning', attacks: [{ icon: 'fa-bolt', label: 'Thunder Shock', dmg: 14 }, { icon: 'fa-bolt', label: 'Thunderbolt', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 10 }, { icon: 'fa-shield', label: 'Growl', dmg: 6 }] },
-      'jolteon': { category: '⚡ Lightning', attacks: [{ icon: 'fa-bolt', label: 'Thunder Shock', dmg: 14 }, { icon: 'fa-bolt', label: 'Thunderbolt', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 10 }, { icon: 'fa-shield', label: 'Growl', dmg: 6 }] },
-      'zapdos': { category: '⚡ Lightning', attacks: [{ icon: 'fa-bolt', label: 'Thunder Shock', dmg: 18 }, { icon: 'fa-bolt', label: 'Thunderbolt', dmg: 24 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 14 }, { icon: 'fa-shield', label: 'Growl', dmg: 10 }] },
-
-      // Ground / Rock
-      'sandshrew': { category: '🪨 Ground', attacks: [{ icon: 'fa-mountain', label: 'Sand Attack', dmg: 8 }, { icon: 'fa-rock', label: 'Rock Throw', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 6 }, { icon: 'fa-shield', label: 'Defense Curl', dmg: 5 }] },
-      'sandslash': { category: '🪨 Ground', attacks: [{ icon: 'fa-mountain', label: 'Sand Attack', dmg: 12 }, { icon: 'fa-rock', label: 'Rock Throw', dmg: 18 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 10 }, { icon: 'fa-shield', label: 'Defense Curl', dmg: 8 }] },
-      'nidoran♂': { category: '🪨 Ground', attacks: [{ icon: 'fa-mountain', label: 'Sand Attack', dmg: 8 }, { icon: 'fa-rock', label: 'Rock Throw', dmg: 12 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 6 }, { icon: 'fa-shield', label: 'Defense Curl', dmg: 5 }] },
-      'nidorina': { category: '🪨 Ground', attacks: [{ icon: 'fa-mountain', label: 'Sand Attack', dmg: 10 }, { icon: 'fa-rock', label: 'Rock Throw', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 8 }, { icon: 'fa-shield', label: 'Defense Curl', dmg: 6 }] },
-      'nidoqueen': { category: '🪨 Ground', attacks: [{ icon: 'fa-mountain', label: 'Sand Attack', dmg: 14 }, { icon: 'fa-rock', label: 'Rock Throw', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 12 }, { icon: 'fa-shield', label: 'Defense Curl', dmg: 10 }] },
-      'nidoran♀': { category: '🪨 Ground', attacks: [{ icon: 'fa-mountain', label: 'Sand Attack', dmg: 8 }, { icon: 'fa-rock', label: 'Rock Throw', dmg: 12 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 6 }, { icon: 'fa-shield', label: 'Defense Curl', dmg: 5 }] },
-      'nidorino': { category: '🪨 Ground', attacks: [{ icon: 'fa-mountain', label: 'Sand Attack', dmg: 10 }, { icon: 'fa-rock', label: 'Rock Throw', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 8 }, { icon: 'fa-shield', label: 'Defense Curl', dmg: 6 }] },
-      'nidoking': { category: '🪨 Ground', attacks: [{ icon: 'fa-mountain', label: 'Sand Attack', dmg: 14 }, { icon: 'fa-rock', label: 'Rock Throw', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 12 }, { icon: 'fa-shield', label: 'Defense Curl', dmg: 10 }] },
-      'geodude': { category: '🪨 Ground', attacks: [{ icon: 'fa-mountain', label: 'Sand Attack', dmg: 8 }, { icon: 'fa-rock', label: 'Rock Throw', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-shield', label: 'Defense Curl', dmg: 5 }] },
-      'graveler': { category: '🪨 Ground', attacks: [{ icon: 'fa-mountain', label: 'Sand Attack', dmg: 12 }, { icon: 'fa-rock', label: 'Rock Throw', dmg: 18 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-shield', label: 'Defense Curl', dmg: 8 }] },
-      'golem': { category: '🪨 Ground', attacks: [{ icon: 'fa-mountain', label: 'Sand Attack', dmg: 16 }, { icon: 'fa-rock', label: 'Rock Throw', dmg: 22 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 14 }, { icon: 'fa-shield', label: 'Defense Curl', dmg: 10 }] },
-      'onix': { category: '🪨 Ground', attacks: [{ icon: 'fa-mountain', label: 'Sand Attack', dmg: 10 }, { icon: 'fa-rock', label: 'Rock Throw', dmg: 16 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 8 }, { icon: 'fa-shield', label: 'Defense Curl', dmg: 6 }] },
-      'cubone': { category: '🪨 Ground', attacks: [{ icon: 'fa-mountain', label: 'Sand Attack', dmg: 8 }, { icon: 'fa-rock', label: 'Rock Throw', dmg: 12 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 6 }, { icon: 'fa-shield', label: 'Defense Curl', dmg: 5 }] },
-      'marowak': { category: '🪨 Ground', attacks: [{ icon: 'fa-mountain', label: 'Sand Attack', dmg: 12 }, { icon: 'fa-rock', label: 'Rock Throw', dmg: 18 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 10 }, { icon: 'fa-shield', label: 'Defense Curl', dmg: 8 }] },
-      'rhyhorn': { category: '🪨 Ground', attacks: [{ icon: 'fa-mountain', label: 'Sand Attack', dmg: 10 }, { icon: 'fa-rock', label: 'Rock Throw', dmg: 16 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 8 }, { icon: 'fa-shield', label: 'Defense Curl', dmg: 6 }] },
-      'rhydon': { category: '🪨 Ground', attacks: [{ icon: 'fa-mountain', label: 'Sand Attack', dmg: 14 }, { icon: 'fa-rock', label: 'Rock Throw', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 12 }, { icon: 'fa-shield', label: 'Defense Curl', dmg: 10 }] },
-
-      // Psychic
-      'abra': { category: '🔮 Psychic', attacks: [{ icon: 'fa-brain', label: 'Confusion', dmg: 10 }, { icon: 'fa-eye', label: 'Psybeam', dmg: 16 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-shield', label: 'Barrier', dmg: 5 }] },
-      'kadabra': { category: '🔮 Psychic', attacks: [{ icon: 'fa-brain', label: 'Confusion', dmg: 14 }, { icon: 'fa-eye', label: 'Psybeam', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-shield', label: 'Barrier', dmg: 8 }] },
-      'alakazam': { category: '🔮 Psychic', attacks: [{ icon: 'fa-brain', label: 'Confusion', dmg: 18 }, { icon: 'fa-eye', label: 'Psybeam', dmg: 24 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 14 }, { icon: 'fa-shield', label: 'Barrier', dmg: 10 }] },
-      'drowzee': { category: '🔮 Psychic', attacks: [{ icon: 'fa-brain', label: 'Confusion', dmg: 8 }, { icon: 'fa-eye', label: 'Psybeam', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-shield', label: 'Barrier', dmg: 5 }] },
-      'hypno': { category: '🔮 Psychic', attacks: [{ icon: 'fa-brain', label: 'Confusion', dmg: 14 }, { icon: 'fa-eye', label: 'Psybeam', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-shield', label: 'Barrier', dmg: 8 }] },
-      'mr-mime': { category: '🔮 Psychic', attacks: [{ icon: 'fa-brain', label: 'Confusion', dmg: 10 }, { icon: 'fa-eye', label: 'Psybeam', dmg: 16 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 8 }, { icon: 'fa-shield', label: 'Barrier', dmg: 6 }] },
-      'jynx': { category: '🔮 Psychic', attacks: [{ icon: 'fa-brain', label: 'Confusion', dmg: 12 }, { icon: 'fa-eye', label: 'Psybeam', dmg: 18 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 8 }, { icon: 'fa-shield', label: 'Barrier', dmg: 6 }] },
-      'mewtwo': { category: '🔮 Psychic', attacks: [{ icon: 'fa-brain', label: 'Confusion', dmg: 20 }, { icon: 'fa-eye', label: 'Psybeam', dmg: 28 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 16 }, { icon: 'fa-shield', label: 'Barrier', dmg: 12 }] },
-      'mew': { category: '🔮 Psychic', attacks: [{ icon: 'fa-brain', label: 'Confusion', dmg: 16 }, { icon: 'fa-eye', label: 'Psybeam', dmg: 22 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 12 }, { icon: 'fa-shield', label: 'Barrier', dmg: 10 }] },
-
-      // Normal / Default
-      'pidgey': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-wing', label: 'Gust', dmg: 10 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 8 }, { icon: 'fa-shield', label: 'Growl', dmg: 4 }] },
-      'pidgeotto': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-wing', label: 'Gust', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 12 }, { icon: 'fa-shield', label: 'Growl', dmg: 6 }] },
-      'pidgeot': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 14 }, { icon: 'fa-wing', label: 'Gust', dmg: 18 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 16 }, { icon: 'fa-shield', label: 'Growl', dmg: 8 }] },
-      'rattata': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 8 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 6 }, { icon: 'fa-shield', label: 'Growl', dmg: 4 }] },
-      'raticate': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 12 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 10 }, { icon: 'fa-shield', label: 'Growl', dmg: 6 }] },
-      'spearow': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-wing', label: 'Gust', dmg: 10 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 8 }, { icon: 'fa-shield', label: 'Growl', dmg: 4 }] },
-      'fearow': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 12 }, { icon: 'fa-wing', label: 'Gust', dmg: 16 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 14 }, { icon: 'fa-shield', label: 'Growl', dmg: 8 }] },
-      'ekans': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 8 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 6 }, { icon: 'fa-shield', label: 'Growl', dmg: 4 }] },
-      'arbok': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 12 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 10 }, { icon: 'fa-shield', label: 'Growl', dmg: 8 }] },
-      'clefairy': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 8 }, { icon: 'fa-shield', label: 'Growl', dmg: 6 }, { icon: 'fa-heart', label: 'Pound', dmg: 6 }] },
-      'clefable': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 12 }, { icon: 'fa-shield', label: 'Growl', dmg: 8 }, { icon: 'fa-heart', label: 'Pound', dmg: 10 }] },
-      'jigglypuff': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-music', label: 'Sing', dmg: 4 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 6 }, { icon: 'fa-shield', label: 'Growl', dmg: 4 }] },
-      'wigglytuff': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-music', label: 'Sing', dmg: 6 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 10 }, { icon: 'fa-shield', label: 'Growl', dmg: 6 }] },
-      'zubat': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-wing', label: 'Gust', dmg: 8 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 6 }, { icon: 'fa-shield', label: 'Growl', dmg: 4 }] },
-      'golbat': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-wing', label: 'Gust', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 10 }, { icon: 'fa-shield', label: 'Growl', dmg: 6 }] },
-      'paras': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 8 }, { icon: 'fa-shield', label: 'Growl', dmg: 4 }, { icon: 'fa-leaf', label: 'Vine Whip', dmg: 8 }] },
-      'parasect': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 12 }, { icon: 'fa-shield', label: 'Growl', dmg: 6 }, { icon: 'fa-leaf', label: 'Vine Whip', dmg: 12 }] },
-      'venonat': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 8 }, { icon: 'fa-shield', label: 'Growl', dmg: 4 }, { icon: 'fa-eye', label: 'Psybeam', dmg: 10 }] },
-      'venomoth': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 12 }, { icon: 'fa-shield', label: 'Growl', dmg: 6 }, { icon: 'fa-eye', label: 'Psybeam', dmg: 14 }] },
-      'diglett': { category: '🪨 Ground', attacks: [{ icon: 'fa-mountain', label: 'Sand Attack', dmg: 6 }, { icon: 'fa-rock', label: 'Rock Throw', dmg: 10 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 6 }, { icon: 'fa-shield', label: 'Defense Curl', dmg: 4 }] },
-      'dugtrio': { category: '🪨 Ground', attacks: [{ icon: 'fa-mountain', label: 'Sand Attack', dmg: 10 }, { icon: 'fa-rock', label: 'Rock Throw', dmg: 16 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 10 }, { icon: 'fa-shield', label: 'Defense Curl', dmg: 8 }] },
-      'meowth': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 8 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 6 }, { icon: 'fa-shield', label: 'Growl', dmg: 4 }] },
-      'persian': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 12 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 10 }, { icon: 'fa-shield', label: 'Growl', dmg: 6 }] },
-      'mankey': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 8 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 6 }, { icon: 'fa-shield', label: 'Growl', dmg: 4 }] },
-      'primeape': { category: '⬜ Normal', attacks: [{ icon: 'fa-fist-raised', label: 'Tackle', dmg: 12 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 12 }, { icon: 'fa-shield', label: 'Growl', dmg: 8 }] },
-      'growlithe': { category: '🔥 Fire', attacks: [{ icon: 'fa-fire', label: 'Ember', dmg: 10 }, { icon: 'fa-fire-flame-curved', label: 'Flamethrower', dmg: 16 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 8 }, { icon: 'fa-shield', label: 'Growl', dmg: 5 }] },
-      'arcanine': { category: '🔥 Fire', attacks: [{ icon: 'fa-fire', label: 'Ember', dmg: 16 }, { icon: 'fa-fire-flame-curved', label: 'Flamethrower', dmg: 22 }, { icon: 'fa-fist-raised', label: 'Scratch', dmg: 12 }, { icon: 'fa-shield', label: 'Growl', dmg: 8 }] },
-      'poliwag': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 8 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 14 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 5 }] },
-      'poliwhirl': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 10 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 16 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 8 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 6 }] },
-      'poliwrath': { category: '💧 Water', attacks: [{ icon: 'fa-droplet', label: 'Water Gun', dmg: 14 }, { icon: 'fa-water', label: 'Hydro Pump', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 12 }, { icon: 'fa-shield', label: 'Withdraw', dmg: 8 }] },
-      'abra': { category: '🔮 Psychic', attacks: [{ icon: 'fa-brain', label: 'Confusion', dmg: 10 }, { icon: 'fa-eye', label: 'Psybeam', dmg: 16 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 6 }, { icon: 'fa-shield', label: 'Barrier', dmg: 5 }] },
-      'kadabra': { category: '🔮 Psychic', attacks: [{ icon: 'fa-brain', label: 'Confusion', dmg: 14 }, { icon: 'fa-eye', label: 'Psybeam', dmg: 20 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 10 }, { icon: 'fa-shield', label: 'Barrier', dmg: 8 }] },
-      'alakazam': { category: '🔮 Psychic', attacks: [{ icon: 'fa-brain', label: 'Confusion', dmg: 18 }, { icon: 'fa-eye', label: 'Psybeam', dmg: 24 }, { icon: 'fa-fist-raised', label: 'Tackle', dmg: 14 }, { icon: 'fa-shield', label: 'Barrier', dmg: 10 }] },
+      'bulbasaur': { category: '🌿 Nature' }, 'ivysaur': { category: '🌿 Nature' }, 'venusaur': { category: '🌿 Nature' },
+      'charmander': { category: '🔥 Fire' }, 'charmeleon': { category: '🔥 Fire' }, 'charizard': { category: '🔥 Fire' },
+      'squirtle': { category: '💧 Water' }, 'wartortle': { category: '💧 Water' }, 'blastoise': { category: '💧 Water' },
+      'pikachu': { category: '⚡ Lightning' }, 'raichu': { category: '⚡ Lightning' },
+      'pidgey': { category: '⬜ Normal' }, 'pidgeotto': { category: '⬜ Normal' }, 'pidgeot': { category: '⬜ Normal' },
+      'rattata': { category: '⬜ Normal' }, 'raticate': { category: '⬜ Normal' },
+      'sandshrew': { category: '🪨 Ground' }, 'sandslash': { category: '🪨 Ground' },
+      'nidoran♀': { category: '🪨 Ground' }, 'nidorina': { category: '🪨 Ground' }, 'nidoqueen': { category: '🪨 Ground' },
+      'nidoran♂': { category: '🪨 Ground' }, 'nidorino': { category: '🪨 Ground' }, 'nidoking': { category: '🪨 Ground' },
+      'clefairy': { category: '⬜ Normal' }, 'clefable': { category: '⬜ Normal' },
+      'vulpix': { category: '🔥 Fire' }, 'ninetales': { category: '🔥 Fire' },
+      'jigglypuff': { category: '⬜ Normal' }, 'wigglytuff': { category: '⬜ Normal' },
+      'zubat': { category: '⬜ Normal' }, 'golbat': { category: '⬜ Normal' },
+      'oddish': { category: '🌿 Nature' }, 'gloom': { category: '🌿 Nature' }, 'vileplume': { category: '🌿 Nature' },
+      'paras': { category: '⬜ Normal' }, 'parasect': { category: '⬜ Normal' },
+      'venonat': { category: '⬜ Normal' }, 'venomoth': { category: '⬜ Normal' },
+      'diglett': { category: '🪨 Ground' }, 'dugtrio': { category: '🪨 Ground' },
+      'meowth': { category: '⬜ Normal' }, 'persian': { category: '⬜ Normal' },
+      'psyduck': { category: '💧 Water' }, 'golduck': { category: '💧 Water' },
+      'mankey': { category: '⬜ Normal' }, 'primeape': { category: '⬜ Normal' },
+      'growlithe': { category: '🔥 Fire' }, 'arcanine': { category: '🔥 Fire' },
+      'poliwag': { category: '💧 Water' }, 'poliwhirl': { category: '💧 Water' }, 'poliwrath': { category: '💧 Water' },
+      'abra': { category: '🔮 Psychic' }, 'kadabra': { category: '🔮 Psychic' }, 'alakazam': { category: '🔮 Psychic' },
+      'machop': { category: '⬜ Normal' }, 'machoke': { category: '⬜ Normal' }, 'machamp': { category: '⬜ Normal' },
+      'bellsprout': { category: '🌿 Nature' }, 'weepinbell': { category: '🌿 Nature' }, 'victreebel': { category: '🌿 Nature' },
+      'tentacool': { category: '💧 Water' }, 'tentacruel': { category: '💧 Water' },
+      'geodude': { category: '🪨 Ground' }, 'graveler': { category: '🪨 Ground' }, 'golem': { category: '🪨 Ground' },
+      'ponyta': { category: '🔥 Fire' }, 'rapidash': { category: '🔥 Fire' },
+      'slowpoke': { category: '💧 Water' }, 'slowbro': { category: '💧 Water' },
+      'magnemite': { category: '⚡ Lightning' }, 'magneton': { category: '⚡ Lightning' },
+      'farfetchd': { category: '⬜ Normal' },
+      'doduo': { category: '⬜ Normal' }, 'dodrio': { category: '⬜ Normal' },
+      'seel': { category: '💧 Water' }, 'dewgong': { category: '💧 Water' },
+      'grimer': { category: '⬜ Normal' }, 'muk': { category: '⬜ Normal' },
+      'shellder': { category: '💧 Water' }, 'cloyster': { category: '💧 Water' },
+      'gastly': { category: '⬜ Normal' }, 'haunter': { category: '⬜ Normal' }, 'gengar': { category: '⬜ Normal' },
+      'onix': { category: '🪨 Ground' },
+      'drowzee': { category: '🔮 Psychic' }, 'hypno': { category: '🔮 Psychic' },
+      'krabby': { category: '💧 Water' }, 'kingler': { category: '💧 Water' },
+      'voltorb': { category: '⚡ Lightning' }, 'electrode': { category: '⚡ Lightning' },
+      'exeggcute': { category: '🌿 Nature' }, 'exeggutor': { category: '🌿 Nature' },
+      'cubone': { category: '🪨 Ground' }, 'marowak': { category: '🪨 Ground' },
+      'hitmonlee': { category: '⬜ Normal' }, 'hitmonchan': { category: '⬜ Normal' },
+      'lickitung': { category: '⬜ Normal' },
+      'koffing': { category: '⬜ Normal' }, 'weezing': { category: '⬜ Normal' },
+      'rhyhorn': { category: '🪨 Ground' }, 'rhydon': { category: '🪨 Ground' },
+      'chansey': { category: '⬜ Normal' },
+      'tangela': { category: '🌿 Nature' },
+      'kangaskhan': { category: '⬜ Normal' },
+      'horsea': { category: '💧 Water' }, 'seadra': { category: '💧 Water' },
+      'goldeen': { category: '💧 Water' }, 'seaking': { category: '💧 Water' },
+      'staryu': { category: '💧 Water' }, 'starmie': { category: '💧 Water' },
+      'mr-mime': { category: '🔮 Psychic' },
+      'scyther': { category: '⬜ Normal' },
+      'jynx': { category: '🔮 Psychic' },
+      'electabuzz': { category: '⚡ Lightning' },
+      'magmar': { category: '🔥 Fire' },
+      'pinsir': { category: '⬜ Normal' },
+      'tauros': { category: '⬜ Normal' },
+      'magikarp': { category: '💧 Water' }, 'gyarados': { category: '💧 Water' },
+      'lapras': { category: '💧 Water' },
+      'ditto': { category: '⬜ Normal' },
+      'eevee': { category: '⬜ Normal' }, 'vaporeon': { category: '💧 Water' }, 'jolteon': { category: '⚡ Lightning' }, 'flareon': { category: '🔥 Fire' },
+      'porygon': { category: '⬜ Normal' },
+      'omanyte': { category: '💧 Water' }, 'omastar': { category: '💧 Water' },
+      'kabuto': { category: '💧 Water' }, 'kabutops': { category: '💧 Water' },
+      'aerodactyl': { category: '⬜ Normal' },
+      'snorlax': { category: '⬜ Normal' },
+      'articuno': { category: '💧 Water' }, 'zapdos': { category: '⚡ Lightning' }, 'moltres': { category: '🔥 Fire' },
+      'dratini': { category: '⬜ Normal' }, 'dragonair': { category: '⬜ Normal' }, 'dragonite': { category: '⬜ Normal' },
+      'mewtwo': { category: '🔮 Psychic' }, 'mew': { category: '🔮 Psychic' }
     };
-
-    // Default attacks for Pokémon not in map
-    const defaultAttacks = [
-      { icon: 'fa-fist-raised', label: 'Tackle', dmg: 8 },
-      { icon: 'fa-fist-raised', label: 'Scratch', dmg: 10 },
-      { icon: 'fa-fist-raised', label: 'Quick Attack', dmg: 12 },
-      { icon: 'fa-shield', label: 'Growl', dmg: 5 }
-    ];
     const defaultCategory = '⬜ Normal';
 
     function getPokemonData(name) {
       const key = name.toLowerCase();
       if (categoryMap[key]) return categoryMap[key];
-      return { category: defaultCategory, attacks: defaultAttacks };
+      return { category: defaultCategory };
     }
 
     // ----- STATE -----
@@ -517,10 +586,11 @@
     let selectedFighters = [];
     let battleActive = false;
     let turnIndex = 0;
+    let battleHistory = []; // each entry: { winner, fighter1, fighter2, f1Hp, f2Hp, f1Sprite, f2Sprite }
 
     // DOM refs
     const gridEl = document.getElementById('pokemon-grid');
-    const historyContainer = document.getElementById('history-container');
+    const historyChipsContainer = document.getElementById('history-chips-container');
     const inputEl = document.getElementById('pokemon-input');
     const searchBtn = document.getElementById('search-btn');
     const randomBtn = document.getElementById('random-btn');
@@ -549,6 +619,8 @@
     const detailAttacks = document.getElementById('detailAttacks');
     const closeDetail = document.getElementById('closeDetail');
 
+    const popup = document.getElementById('historyPopup');
+
     // ----- SOUND -----
     function playSound(type) {
       try {
@@ -557,7 +629,7 @@
         const gain = ctx.createGain();
         osc.connect(gain);
         gain.connect(ctx.destination);
-        gain.gain.value = 0.12;
+        gain.gain.value = 0.10;
         let freq = 400, duration = 0.15;
         if (type === 'tackle') { freq = 300; duration = 0.12; gain.gain.value = 0.15; }
         else if (type === 'flame') { freq = 200; duration = 0.25; osc.type = 'sawtooth'; gain.gain.value = 0.10; }
@@ -603,8 +675,9 @@
       let html = '';
       list.forEach(p => {
         const data = getPokemonData(p.name);
+        const isSelected = selectedFighters.some(f => f.id === p.id);
         html += `
-          <div class="pokemon-card" data-id="${p.id}" data-name="${p.name}" data-sprite="${p.sprite}">
+          <div class="pokemon-card ${isSelected ? 'fighter-selected' : ''}" data-id="${p.id}" data-name="${p.name}" data-sprite="${p.sprite}">
             <img src="${p.sprite}" alt="${p.name}" loading="lazy">
             <span class="name">${capitalize(p.name)}</span>
             <span class="id">#${String(p.id).padStart(3, '0')}</span>
@@ -631,6 +704,14 @@
       });
     }
 
+    function updateGridSelection() {
+      document.querySelectorAll('.pokemon-card').forEach(card => {
+        const id = parseInt(card.dataset.id);
+        const isSelected = selectedFighters.some(f => f.id === id);
+        card.classList.toggle('fighter-selected', isSelected);
+      });
+    }
+
     // ----- DETAIL MODAL -----
     function showDetail(id, name, sprite) {
       playSound('select');
@@ -639,12 +720,10 @@
       detailName.textContent = capitalize(name);
       detailCategory.textContent = data.category;
       detailId.textContent = `#${String(id).padStart(3, '0')}`;
-      detailAttacks.innerHTML = data.attacks.map(m => 
-        `<span class="d-attack-tag"><i class="fas ${m.icon}"></i> ${m.label} ${m.dmg}</span>`
-      ).join('');
+      detailAttacks.innerHTML = `<span class="d-attack-tag"><i class="fas fa-fist-raised"></i> Tackle 8</span>
+                                 <span class="d-attack-tag"><i class="fas fa-bolt"></i> Thunder 15</span>`;
       detailOverlay.style.display = 'flex';
       detailOverlay.onclick = function(e) { if (e.target === detailOverlay) closeDetailModal(); };
-      // Add select button
       const oldBtn = detailAttacks.parentElement.querySelector('.detail-select-btn');
       if (oldBtn) oldBtn.remove();
       const selectBtn = document.createElement('button');
@@ -680,9 +759,11 @@
       selectedFighters.push(fighter);
       playSound('select');
       updateBattleUI();
+      updateGridSelection();
       if (selectedFighters.length === 2) {
         setLog('⚡ Both ready! Choose an attack.', 'fa-bolt');
         enableAttacks(true);
+        updateTurnIndicator();
       } else {
         setLog(`👉 Select second fighter.`, 'fa-hand-pointer');
         enableAttacks(false);
@@ -691,6 +772,15 @@
 
     function enableAttacks(enabled) {
       attackBtns.forEach(btn => btn.disabled = !enabled);
+    }
+
+    function updateTurnIndicator() {
+      document.querySelectorAll('.fighter').forEach(el => el.classList.remove('active-turn'));
+      if (selectedFighters.length === 2) {
+        const idx = turnIndex;
+        const target = idx === 0 ? document.getElementById('fighter1') : document.getElementById('fighter2');
+        if (target) target.classList.add('active-turn');
+      }
     }
 
     function updateBattleUI() {
@@ -716,6 +806,7 @@
         f2Img.src = ''; f2Name.textContent = '—'; f2Category.textContent = '—';
         f2Hp.style.width = '100%'; f2Hp.className = 'hp-fill'; f2HpText.textContent = 'HP 100';
       }
+      updateTurnIndicator();
     }
 
     function updateHpBar(barEl, textEl, fighter) {
@@ -761,13 +852,32 @@
 
       if (defender.hp <= 0) {
         playSound('faint');
-        setLog(`🏆 ${capitalize(attacker.name)} wins!`, 'fa-trophy');
+        const winner = attacker;
+        // store history with HP and sprites
+        battleHistory.push({
+          winner: capitalize(winner.name),
+          fighter1: capitalize(selectedFighters[0].name),
+          fighter2: capitalize(selectedFighters[1].name),
+          f1Hp: selectedFighters[0].hp,
+          f2Hp: selectedFighters[1].hp,
+          f1Sprite: selectedFighters[0].sprite,
+          f2Sprite: selectedFighters[1].sprite,
+          f1MaxHp: selectedFighters[0].maxHp,
+          f2MaxHp: selectedFighters[1].maxHp
+        });
+        renderHistory();
+        setLog(`🏆 ${capitalize(winner.name)} wins!`, 'fa-trophy');
         enableAttacks(false);
         battleActive = false;
+        setTimeout(() => {
+          resetBattle();
+          setLog('🔄 Auto-reset! Select two Pokémon.', 'fa-rotate');
+        }, 4000);
         return;
       }
 
       turnIndex = 1 - turnIndex;
+      updateTurnIndicator();
       const nextAttacker = selectedFighters[turnIndex];
       setLog(`⏳ ${capitalize(nextAttacker.name)}'s turn — choose attack`, 'fa-arrow-right');
       battleActive = false;
@@ -784,24 +894,99 @@
       f1Hp.style.width = '100%'; f1Hp.className = 'hp-fill'; f1HpText.textContent = 'HP 100';
       f2Img.src = ''; f2Name.textContent = '—'; f2Category.textContent = '—';
       f2Hp.style.width = '100%'; f2Hp.className = 'hp-fill'; f2HpText.textContent = 'HP 100';
+      document.querySelectorAll('.fighter').forEach(el => el.classList.remove('active-turn'));
+      updateGridSelection();
     }
 
-    // ----- SEARCH / RANDOM / HISTORY -----
+    // ----- HISTORY (inside battle panel) with images and details -----
+    function renderHistory() {
+      if (!battleHistory.length) {
+        historyChipsContainer.innerHTML = `<span class="history-empty">No battles yet</span>`;
+        return;
+      }
+      let html = '';
+      const recent = [...battleHistory].reverse().slice(0, 20);
+      recent.forEach((item, idx) => {
+        const isWinner1 = item.winner === item.fighter1;
+        html += `
+          <span class="history-chip" data-index="${idx}" data-history='${JSON.stringify(item).replace(/'/g, "&#39;")}'>
+            <img src="${item.f1Sprite}" alt="${item.fighter1}" title="${item.fighter1}">
+            <span>${item.fighter1}</span>
+            <span class="vs-text">⚔️</span>
+            <img src="${item.f2Sprite}" alt="${item.fighter2}" title="${item.fighter2}">
+            <span>${item.fighter2}</span>
+            <span class="vs-text">→</span>
+            <span class="winner-name">${item.winner}</span>
+            <span class="hp-info">(${Math.round(item.f1Hp)}/${item.f1MaxHp} ❤️ ${Math.round(item.f2Hp)}/${item.f2MaxHp})</span>
+          </span>
+        `;
+      });
+      historyChipsContainer.innerHTML = html;
+
+      // Attach hover events for detailed popup
+      document.querySelectorAll('.history-chip').forEach(chip => {
+        chip.addEventListener('mouseenter', function(e) {
+          const dataStr = this.dataset.history;
+          if (!dataStr) return;
+          try {
+            const item = JSON.parse(dataStr);
+            showHistoryPopup(e, item);
+          } catch (err) { /* ignore */ }
+        });
+        chip.addEventListener('mouseleave', function() {
+          popup.classList.remove('show');
+        });
+        chip.addEventListener('mousemove', function(e) {
+          const rect = popup.getBoundingClientRect();
+          let left = e.clientX + 12;
+          let top = e.clientY - rect.height / 2;
+          if (left + rect.width > window.innerWidth - 10) left = e.clientX - rect.width - 12;
+          if (top < 10) top = 10;
+          if (top + rect.height > window.innerHeight - 10) top = window.innerHeight - rect.height - 10;
+          popup.style.left = left + 'px';
+          popup.style.top = top + 'px';
+        });
+      });
+    }
+
+    function showHistoryPopup(e, item) {
+      const winner1 = item.winner === item.fighter1;
+      popup.innerHTML = `
+        <div class="popup-row">
+          <img src="${item.f1Sprite}" alt="${item.fighter1}">
+          <span class="popup-name">${item.fighter1}</span>
+          <span class="popup-hp">❤️ ${Math.round(item.f1Hp)}/${item.f1MaxHp}</span>
+          ${winner1 ? '⭐' : ''}
+        </div>
+        <div class="popup-row" style="justify-content:center; color:#64748b; font-size:0.6rem;">⚔️ VS ⚔️</div>
+        <div class="popup-row">
+          <img src="${item.f2Sprite}" alt="${item.f2Sprite}">
+          <span class="popup-name">${item.fighter2}</span>
+          <span class="popup-hp">❤️ ${Math.round(item.f2Hp)}/${item.f2MaxHp}</span>
+          ${!winner1 ? '⭐' : ''}
+        </div>
+        <div class="popup-row" style="justify-content:center; margin-top:0.2rem; border-top:1px solid #2d3a4f; padding-top:0.2rem;">
+          <span>🏆 Winner: <span class="popup-winner">${item.winner}</span></span>
+        </div>
+      `;
+      popup.classList.add('show');
+      // position
+      const rect = popup.getBoundingClientRect();
+      let left = e.clientX + 12;
+      let top = e.clientY - rect.height / 2;
+      if (left + rect.width > window.innerWidth - 10) left = e.clientX - rect.width - 12;
+      if (top < 10) top = 10;
+      if (top + rect.height > window.innerHeight - 10) top = window.innerHeight - rect.height - 10;
+      popup.style.left = left + 'px';
+      popup.style.top = top + 'px';
+    }
+
+    // ----- SEARCH / RANDOM -----
     function searchPokemon() {
       const term = inputEl.value.trim().toLowerCase();
       if (!term) { renderGrid(allPokemon); return; }
       const filtered = allPokemon.filter(p => p.name.includes(term) || String(p.id) === term);
       renderGrid(filtered);
-      addHistory(term);
-    }
-
-    function addHistory(term) {
-      const chip = document.createElement('span');
-      chip.className = 'history-chip';
-      chip.textContent = term;
-      chip.addEventListener('click', function() { inputEl.value = term; searchPokemon(); });
-      historyContainer.prepend(chip);
-      if (historyContainer.children.length > 12) historyContainer.lastChild.remove();
     }
 
     function randomSearch() {
@@ -816,6 +1001,7 @@
       allPokemon = await fetchAllPokemon();
       renderGrid(allPokemon);
       resetBattle();
+      renderHistory();
 
       searchBtn.addEventListener('click', searchPokemon);
       inputEl.addEventListener('keydown', e => { if (e.key === 'Enter') searchPokemon(); });
@@ -831,7 +1017,6 @@
         });
       });
 
-      historyContainer.innerHTML = `<span class="history-chip" style="border:1px dashed #475569;"><i class="fas fa-clock"></i> history</span>`;
       setLog('👋 Click a Pokémon for details, double-click to select.', 'fa-hand-peace');
     }
 
